@@ -1,8 +1,7 @@
 import hashlib
-import requests 
-
-def generate_password():
-    print()
+import requests
+import secrets 
+import string
 
 def check_password():
     password = input("Enter password: ")
@@ -52,7 +51,22 @@ def check_password():
     elif count == 0:
         print("Your password did not appear in the Have I been Pwned database!\n It is safe for you to keep using your password")
 
-options = ["Generate password", "Check password"]
+
+def generate_password():
+    symbols = "!@#$%^&*()-_=+[]{};:,.<>?"
+    characters = string.ascii_letters + string.digits + symbols
+    passw = ""
+    for a in range(15): 
+        passw += secrets.choice(characters) 
+        # print (secrets.choice(characters))
+    
+    print(passw)
+
+
+def calculate_entropy():
+    print()
+
+options = ["Generate password", "Check password", "Calculate entropy of password"]
 
 def menu():
     print("What would you like to do?")
@@ -60,10 +74,14 @@ def menu():
         print(f"{i+1}. {options[i]}")
 
     choice = input("Choice: ")
-    if choice == 1:
+    if choice == "1":
         generate_password()
-    elif choice == 2:
+    elif choice == "2":
         check_password()
+    elif choice == "3":
+        calculate_entropy()
+
 # check_password()
 
 menu()
+generate_password()
