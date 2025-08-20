@@ -8,20 +8,21 @@ def check_password():
 
     # compute sha1 hash of password
     sha1_hash = hashlib.sha1(password.encode('utf-8')).hexdigest().upper()
-    print(sha1_hash)
     
     # obtain first 5 characters of password to check against the Have I been Pwned API
     prefix = sha1_hash[:5]
 
     # obtain remaining characters to check if password shows up in the database
     suffix = sha1_hash[5:]
-    print(prefix)
-    print(suffix)
-    print(type(suffix))
+    # print(prefix)
+    # print(suffix)
+    # print(type(suffix))
+
+    # Have I been Pwned API
     url = f"https://api.pwnedpasswords.com/range/{prefix}"
-    print(url)
     response = requests.get(url)
-    # print(response.text)
+
+    # Write passwords that match the prefix to a text file
     with open("matches.txt", "w") as f:
         f.write(response.text)
 
@@ -30,24 +31,22 @@ def check_password():
         for line in f:
             if suffix in line:
                 strip = line.strip()
-                print(f"Strip: {strip}")
                 split = strip.split(":")
-                print(split)
                 count = int(split[1])
                 break
         
     if count >= 1000000:
         print(f"Your password has appeared {count} times in database leaks! Please change your password as soon as possible!")
     elif count >= 100000:
-        print(f"Your password has ")
+        print(f"Your password has appeared {count} times in database leaks! Please change your password as soon as possible!")
     elif count >= 10000:
-        print()
+        print(f"Your password has appeared {count} times in database leaks! Please change your password as soon as possible!")
     elif count >= 1000:
-        print()
+        print(f"Your password has appeared {count} times in database leaks! Please change your password as soon as possible!")
     elif count >= 100:
-        print()
+        print(f"Your password has appeared {count} times in database leaks! Please change your password as soon as possible!")
     elif count >= 10:
-        print()
+        print(f"Your password has appeared {count} times in database leaks! Please change your password within the next")
     elif count == 0:
         print("Your password did not appear in the Have I been Pwned database!\n It is safe for you to keep using your password")
 
@@ -60,8 +59,32 @@ def generate_password():
         passw += secrets.choice(characters) 
         # print (secrets.choice(characters))
     
-    print(passw)
+    passw_array = []
+    for e in passw:
+        passw_array += e
 
+    alphabet_count = 0
+    number_count = 0
+    symbol_count = 0
+
+    print(f"Array {passw_array}")
+    for b in range(len(passw_array)):
+        if passw_array[b] in string.ascii_letters:
+            alphabet_count += 1
+        elif passw_array[b] in string.digits:
+            number_count += 1            
+        else:
+            symbol_count += 1
+        
+    print(f"abc: {alphabet_count}, number: {number_count}, symbols: {symbol_count}")
+
+    did_not_meet_req = 0
+    if alphabet_count == 0 or number_count == 0 or symbol_count == 0:
+        did_not_meet_req += 1
+        generate_password()
+    else:
+        print(f"Did not meet reqs {did_not_meet_req} times")
+        print(f"Generated password: {passw}")
 
 def calculate_entropy():
     print()
@@ -84,4 +107,4 @@ def menu():
 # check_password()
 
 menu()
-generate_password()
+# generate_password()
