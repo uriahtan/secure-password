@@ -2,6 +2,7 @@ import hashlib
 import requests
 import secrets 
 import string
+import math
 
 def check_password():
     password = input("Enter password: ")
@@ -63,23 +64,27 @@ def generate_password():
     for e in passw:
         passw_array += e
 
-    alphabet_count = 0
+    lower_alphabet_count = 0
+    upper_alphabet_count = 0
     number_count = 0
     symbol_count = 0
 
     print(f"Array {passw_array}")
     for b in range(len(passw_array)):
         if passw_array[b] in string.ascii_letters:
-            alphabet_count += 1
+            if passw_array[b].islower() == True:
+                lower_alphabet_count += 1
+            else:
+                upper_alphabet_count += 1
         elif passw_array[b] in string.digits:
             number_count += 1            
         else:
             symbol_count += 1
         
-    print(f"abc: {alphabet_count}, number: {number_count}, symbols: {symbol_count}")
+    print(f"lower abc: {lower_alphabet_count}, upper abc: {upper_alphabet_count}, number: {number_count}, symbols: {symbol_count}")
 
     did_not_meet_req = 0
-    if alphabet_count == 0 or number_count == 0 or symbol_count == 0:
+    if lower_alphabet_count == 0 or upper_alphabet_count == 0 or number_count == 0 or symbol_count == 0:
         did_not_meet_req += 1
         generate_password()
     else:
@@ -87,7 +92,44 @@ def generate_password():
         print(f"Generated password: {passw}")
 
 def calculate_entropy():
-    print()
+    password = input("Enter your password: ")
+    length = len(password)
+    # password_array = list(password)
+    # print("passw arr ", password_array)
+    symbols = "!@#$%^&*()-_=+[]{};:,.<>?"
+    n = 0
+    lower_count = 0
+    upper_count = 0
+    number_count = 0
+    symbol_count = 0
+    for ent in password:
+        if ent.islower() == True and lower_count == 0:
+            n += 26
+            lower_count += 1
+        elif ent.isupper() == True and upper_count == 0:
+            n += 26
+            upper_count += 1
+        elif ent.isdigit() == True and number_count == 0:
+            n += 10
+            number_count += 1
+        elif ent in symbols and symbol_count == 0:
+            n += 25
+            symbol_count += 1
+    # print(f"n: {n}")
+    entropy_value = round(length * math.log2(n))
+    print(f"Entropy value: {entropy_value} bytes")
+    
+    # example ranges
+    if entropy_value >= 128:
+        print("Password strength: Very strong")
+    elif entropy_value >= 60:
+        print("Password strength: Strong")
+    elif entropy_value >= 36:
+        print("Password strength: Medium")
+    elif entropy_value >= 28:
+        print("Password strength: Weak")
+    else:
+        print("Password strength: Very weak")
 
 options = ["Generate password", "Check password", "Calculate entropy of password"]
 
@@ -104,7 +146,6 @@ def menu():
     elif choice == "3":
         calculate_entropy()
 
-# check_password()
-
 menu()
+# check_password()
 # generate_password()
